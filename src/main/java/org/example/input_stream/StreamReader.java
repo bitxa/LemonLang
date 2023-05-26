@@ -9,13 +9,13 @@ public class StreamReader {
         private Reader reader;
         private BufferedReader buffer;
 
-        StreamReader(String fileName) throws FileNotFoundException {
+        public StreamReader(String fileName) throws FileNotFoundException {
             this.reader = new FileReader(fileName);
             this.buffer = new BufferedReader(this.reader);
         }
 
 
-        BufferedReader buffer(){
+        public BufferedReader buffer(){
             return buffer;
         }
 
