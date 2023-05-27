@@ -2,9 +2,9 @@ package org.example.symbols;
 
 public class Token{
     private final String value;
-    private final String type;
+    private final TokenType type;
 
-    public Token(String value, String type){
+    public Token(String value, TokenType type){
         this.value = value;
         this.type = type;
     }
@@ -13,7 +13,7 @@ public class Token{
         return value;
     }
 
-    public String getType() {
+    public TokenType getType() {
         return type;
     }
 

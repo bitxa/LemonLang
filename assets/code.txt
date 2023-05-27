@@ -1,9 +1,10 @@
-lemonade nuevoPrograma {
-    number a = 200;
-    number b = 300;
-    string cadena = "resultado:";
+lemonade nuevoPrograma{
+    number a=200;
+    number b=300;
+    string cadena="resultado:";
     vlb valorFinal;
-    if (a < b){
-        valor_final = 200 + 300; print cadena + valorFinal;
+    if(a<b){
+        valor_final = 200 + 300;
+        print cadena+valorFinal;
     }
  }
