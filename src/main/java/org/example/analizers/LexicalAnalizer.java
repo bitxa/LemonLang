@@ -155,9 +155,12 @@ public class LexicalAnalizer {
                     case 8:
                         // COMENTARIOS
                         if (lexeme.equals(TokenPattern.COMMENT) && !stringQuoteFoundBefore){
-                            tokens.add(line.replaceFirst("^\\s+", ""));
-                            continue fileLoop;
+                            if(token.toString().length()==0){
+                                tokens.add(line.replaceFirst("^\\s+", ""));
+                                continue fileLoop;
+                            }
 
+                            state +=1;
                         }
                         state += 1;
                     case 9:
@@ -207,6 +210,8 @@ public class LexicalAnalizer {
     public static void main(String[] args) throws Exception {
         LexicalAnalizer lexicalAnalizer = new LexicalAnalizer();
         lexicalAnalizer.collectTokens();
+
+        //remueve los tokens que son espacios en blanco
         lexicalAnalizer.tokens.removeIf(str -> str.trim().isEmpty());
         for (String x : lexicalAnalizer.tokens) {
             System.out.println("TOKEN: " + x);
