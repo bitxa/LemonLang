@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class App {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         LexicalAnalizer analizer = new LexicalAnalizer();
         analizer.collectTokens();
 

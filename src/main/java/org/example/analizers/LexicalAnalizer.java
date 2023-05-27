@@ -1,159 +1,221 @@
 package org.example.analizers;
 
 import org.example.input_stream.StreamReader;
-import org.example.symbols.Token;
 import org.example.symbols.TokenPattern;
-import org.example.symbols.TokenType;
-
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import static java.lang.String.valueOf;
 
 public class LexicalAnalizer {
     StreamReader reader;
     TokenPattern pattern;
-
     ArrayList<String> tokens;
+    String line;
+    boolean stringQuoteFoundBefore = false;
+    boolean floatPointNumberFoundBefore = false;
 
-    ArrayList<Token> finalTokens;
+    boolean inComment = false;
 
 
     public LexicalAnalizer() throws FileNotFoundException {
         this.reader = new StreamReader("assets/code.txt");
         this.pattern = new TokenPattern();
-        this.finalTokens = new ArrayList<>();
-    }
-    private boolean isWhitespace(String token) {
-        return token.equals(" ");
-    }
-    public void collectTokens() throws IOException {
-        String line;
         tokens = new ArrayList<>();
+    }
 
-        while ((line = this.reader.buffer().readLine()) != null) {
+    public void collectTokens() throws Exception {
+        fileLoop:while ((line = this.reader.buffer().readLine()) != null) {
             char[] chars = line.toCharArray();
             StringBuilder token = new StringBuilder();
 
             int state = 0;
-            boolean foundNumber = false;
-            boolean foundPossibleDecimal = false;
+
             for (int i = 0; i < chars.length ; i++) {
                 String lexeme = valueOf(chars[i]);
 
-                    switch (state) {
-                        case 0:
-                            foundPossibleDecimal = false;
-                            //Letra
-                            if (lexeme.matches("[A-Za-z]")) {
+                switch (state) {
+                    case 0:
+                        // Letra
+                        if (lexeme.matches(TokenPattern.LETTER_PATTERN)) {
+                            token.append(lexeme);
+                            continue;
+                        }
+                        state += 1;
+
+                    case 1:
+                        // Numeros enteros
+                        if (lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)) {
+                            token.append(lexeme);
+                            state = 0;
+                            continue;
+                        }
+                        state += 1;
+
+                    case 2:
+                        // Operadores aritméticos  + - * / %
+                        if (lexeme.matches(TokenPattern.ARITHMETIC_OPERATOR_PATTERN)) {
+                            if (stringQuoteFoundBefore) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;
                             }
+                            tokens.add(valueOf(token));
+                            tokens.add(lexeme);
+                            token = new StringBuilder();
+                            floatPointNumberFoundBefore = false;
+                            state = 0;
+                            continue;
+                        }
+                        state += 1;
 
-                            state +=1;
-
-                        case 1:
-                            //Numeros
-                            if(lexeme.matches("\\d+") || foundPossibleDecimal){
+                    case 3:
+                        // Operadores lógicos  & | !
+                        if (lexeme.matches(TokenPattern.LOGICAL_OPERATOR_PATTERN)) {
+                            if (stringQuoteFoundBefore) {
                                 token.append(lexeme);
-                                if (valueOf(chars[i+1]).equals(".")){
-                                    foundPossibleDecimal = true;
-                                    state = 1;
-                                    continue;
-                                }
-                                state = 0;
-                            }
-                            state +=1;
-                        case 2:
-                            // Operadores aritméticos  + - * / %
-                            if(lexeme.matches(TokenPattern.ARITHMETIC_OPERATOR_PATTERN)){
-                                tokens.add(valueOf(token));
-                                token = new StringBuilder();
-                                token.append((lexeme));
                                 state = 0;
                                 continue;
                             }
-                            state +=1;
+                            tokens.add(valueOf(token));
+                            tokens.add(lexeme);
+                            token = new StringBuilder();
+                            state = 0;
+                            floatPointNumberFoundBefore = false;
+                            continue;
+                        }
+                        state += 1;
 
-                        case 3:
-                            //Operadores lógicos  & | !
-                            if(lexeme.matches(TokenPattern.LOGICAL_OPERATOR_PATTERN)){
-                                tokens.add(valueOf(token));
-                                tokens.add(lexeme);
-                                token = new StringBuilder();
+                    case 4:
+                        // Operadores de comparación < <= > >= == !=
+                        if (lexeme.matches(TokenPattern.COMPARISON_OPERATOR_PATTERN)) {
+                            if (stringQuoteFoundBefore) {
+                                token.append(lexeme);
                                 state = 0;
                                 continue;
                             }
-                            state +=1;
-                        case 4:
-                            //Operadores de comparación < <= > >= == !=
-                            if(lexeme.matches(TokenPattern.COMPARISON_OPERATOR_PATTERN)){
+                            tokens.add(valueOf(token));
+                            tokens.add(lexeme);
+                            token = new StringBuilder();
+                            state = 0;
+                            floatPointNumberFoundBefore = false;
+                            continue;
+                        }
+                        state += 1;
 
+                    case 5:
+                        // Espacio
+                        if (lexeme.matches(TokenPattern.WHITE_SPACE)) {
+                            if (stringQuoteFoundBefore) {
+                                token.append(lexeme);
+                                state = 0;
+                                continue;
                             }
+                            tokens.add(valueOf(token));
+                            token = new StringBuilder();
+                            state = 0;
+                            floatPointNumberFoundBefore = false;
+                            continue;
+                        }
+                        state += 1;
 
-                        default:
-                            throw new IllegalStateException("Invalid input: " + state);
-                    }
+                    case 6:
+                        // Operadores puntuación () {} , ;]
+                        if (lexeme.matches(TokenPattern.PUNCTUATION_PATTERN)) {
+                            if (stringQuoteFoundBefore) {
+                                token.append(lexeme);
+                                state = 0;
+                                continue;
+                            }
+                            tokens.add(valueOf(token));
+                            tokens.add(lexeme);
+                            token = new StringBuilder();
+                            state = 0;
+                            floatPointNumberFoundBefore = false;
+                            continue;
+                        }
+                        state += 1;
+
+                    case 7:
+                        // Operador asignación =
+                        if (lexeme.matches(TokenPattern.ASSIGNMENT_OPERATOR_PATTERN)) {
+                            if (stringQuoteFoundBefore) {
+                                token.append(lexeme);
+                                state = 0;
+                                continue;
+                            }
+                            tokens.add(valueOf(token));
+                            tokens.add(lexeme);
+                            token = new StringBuilder();
+                            state = 0;
+                            floatPointNumberFoundBefore = false;
+                            continue;
+                        }
+                        state += 1;
+
+                    case 8:
+                        // COMENTARIOS
+                        if (lexeme.equals(TokenPattern.COMMENT) && !stringQuoteFoundBefore){
+                            tokens.add(line.replaceFirst("^\\s+", ""));
+                            continue fileLoop;
+
+                        }
+                        state += 1;
+                    case 9:
+                        // Comilla doble de cadenas de texto "
+                        if (lexeme.matches(TokenPattern.STRING_DOUBLE_QUOTE)) {
+                            token.append(lexeme);
+                            if (stringQuoteFoundBefore) {
+                                tokens.add(valueOf(token));
+                                token = new StringBuilder();
+                                stringQuoteFoundBefore = false;
+                                state = 0;
+                                continue;
+                            }
+                            floatPointNumberFoundBefore = false;
+                            stringQuoteFoundBefore = true;
+                            state = 0;
+                            continue;
+                        }
+                        state += 1;
+
+                    case 10:
+                        if (floatPointNumberFoundBefore && !stringQuoteFoundBefore) {
+                            throwError(line, "INVALID FLOAT POINT .");
+                        }
+                        if (lexeme.matches(TokenPattern.DECIMAL_FLOAT_POINT)) {
+                            token.append(lexeme);
+                            state = 0;
+                            floatPointNumberFoundBefore = true;
+                            continue;
+                        }
+                        state += 1;
+
+                    default:
+                        // string cadena="resultado:.?$%?$?%";
+                        if (stringQuoteFoundBefore) {
+                            token.append(lexeme);
+                            state = 0;
+                            continue;
+                        }
+                        throwError(line, "Symbol { " + lexeme + " } not valid");
+                        break;
+                }
             }
-
-
-                /*
-                if (stringValue.matches(TokenPattern.PUNCTUATION_PATTERN)){
-                    tokens.add(valueOf(token));
-                    tokens.add(valueOf(lexeme));
-
-                    token = new StringBuilder();
-                    continue;
-                }
-
-                if (!isWhitespace(stringValue)){
-                   token.append(lexeme);
-                   continue;
-                }
-
-                tokens.add(String.valueOf(token));
-                token = new StringBuilder(); */
         }
-
-        //tokens.removeIf(str -> str.trim().isEmpty());
     }
 
+    public static void main(String[] args) throws Exception {
+        LexicalAnalizer lexicalAnalizer = new LexicalAnalizer();
+        lexicalAnalizer.collectTokens();
+        lexicalAnalizer.tokens.removeIf(str -> str.trim().isEmpty());
+        for (String x : lexicalAnalizer.tokens) {
+            System.out.println("TOKEN: " + x);
+        }
+    }
 
-    /*
-    public static final String KEYWORD_PATTERN = "\\b(vbl|lit|number|string|if|else|for|print)\\b";
-
-    // Identificadores o nombres de variables
-    public static final String IDENTIFIER_PATTERN = "\\b[A-Za-z][A-Za-z0-9]*\\b";
-
-    // Operadores aritméticos
-    public static final String ARITHMETIC_OPERATOR_PATTERN = "\\+|-|\\*|/|%";
-
-    // Operadores relacionales o de comparación
-    public static final String COMPARISON_OPERATOR_PATTERN = "<|<=|>|>=|==|!=";
-
-    // Operadores lógicos &&: AND, ||: OR, !: NOT
-    public static final String LOGICAL_OPERATOR_PATTERN = "&&|\\|\\||!";
-
-    // Literales true: verdadero, false: falso
-    public static final String BOOLEAN_LITERAL_PATTERN = "\\btrue\\b|\\bfalse\\b";
-
-    // Operador de asignación
-    public static final String ASSIGNMENT_OPERATOR_PATTERN = "=";
-
-    // Cadenas de texto dentro de las comillas: "cadena"
-    public static final String STRING_PATTERN = "\"[^\"]*\"";
-
-    //Operadores de puntuación
-    public static final String PUNCTUATION_PATTERN = "[(),{};]";
-
-    //Decimales
-    public static final String FLOAT_NUMBER_PATTERN = "\\d+\\.\\d+";
-
-    //Enteros
-    public static final String INTEGER_NUMBER_PATTERN = "\\d+";
-     */
-
+    public void throwError(String line, String error) {
+        System.out.println(line);
+        System.out.printf("%s ERROR: %s %s%n", "\u001B[31m", error, "\u001B[0m");
+        System.exit(0);
+    }
 }

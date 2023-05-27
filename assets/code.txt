@@ -1,10 +1,12 @@
 lemonade nuevoPrograma{
-    number a=200;
+    number a=2.2;
     number b=300;
-    string cadena="resultado:";
+    string cadena="resultado:.?$%?& 12 | <,; >= $?%";
+    string cadena="cadena2:";
+    $jdajjadosj$
     vlb valorFinal;
     if(a<b){
-        valor_final = 200 + 300;
-        print cadena+valorFinal;
+       valorFinal = 200 + 300;
+       print cadena+valorFinal;
     }
  }

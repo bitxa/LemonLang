@@ -6,8 +6,8 @@ import java.io.FileReader;
 import java.io.Reader;
 
 public class StreamReader {
-        private Reader reader;
-        private BufferedReader buffer;
+        private final Reader reader;
+        private final BufferedReader buffer;
 
         public StreamReader(String fileName) throws FileNotFoundException {
             this.reader = new FileReader(fileName);
@@ -19,10 +19,6 @@ public class StreamReader {
             return buffer;
         }
 
-        Reader reader(){
-            return reader;
-        }
-
-    }
+}
 
 
