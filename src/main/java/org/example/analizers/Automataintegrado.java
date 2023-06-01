@@ -65,7 +65,7 @@ public class Automataintegrado {
                             break;
                         } else {
                             if (OperadoresAritmeticos.contains(currentChar)
-                                    || currentChar == '&'
+                                    || currentChar == '&' || currentChar == '|'
                                     || PuntationSymbols.contains(currentChar)) {
                                 token.append(currentChar);
                                 tokens.add(valueOf(token));

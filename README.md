@@ -1,8 +1,6 @@
 # Lemon Lang 
 
-## Comandos
-
-## Sintaxis
+## Comandos y Sintaxis
 
 * ***Crear un nuevo programa***
 
@@ -95,34 +93,34 @@
   1 * 2 ;
   1 / 2 ;
 
-  // Concatenar cadenas
-  "Hello" + " " + "World!"; // Hello World!
+  $ Concatenar cadenas
+  "Hello" + " " + "World!"; $ Hello World!
   ```
 
   * Relacionales
 
   ```
-  1 < 2 //retorna true;
-  1 <= 1 ; //retorna true;
-  1 > 2 ; //retorna false;
-  1 >= 2 ; //retorna false;
-  1 == 2 ; //retorna falso
-  "a" != "b" ; //retorna verdadero
+  1 < 2 $retorna true;
+  1 <= 1 ; $ retorna true;
+  1 > 2 ; $ retorna false;
+  1 >= 2 ; $ retorna false;
+  1 == 2 ; $ retorna falso
+  "a" != "b" ; $ retorna verdadero
   ```
 
   También podemos comprobar igualdad y desigualdad:
 
   ```
-  1 == 2 ; //falso
-  "a" != "b" ; //verdadero
+  1 == 2 ; $ falso
+  "a" != "b" ; $ verdadero
   ```
 
   * Lógicos
 
   ```
-  true & false; // AND
-  true | false; // OR
-  !true; //NOT, retorna false
+  true & false; $ AND
+  true | false; $ OR
+  !true; $ NOT, retorna false
   ```
 
   * Flujos de control
