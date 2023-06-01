@@ -1,5 +1,5 @@
 lemonade nuevoPrograma{
-    number a = ();
+    number 2.2 = ();
     number b2 =300.2;
 
     string cadena="resultado:.?$%?& 12 | <,; >= $?%";

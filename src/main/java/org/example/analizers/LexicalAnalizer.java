@@ -6,6 +6,7 @@ import org.example.symbols.TokenPattern;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import static java.lang.CharSequence.compare;
 import static java.lang.String.valueOf;
 
 public class LexicalAnalizer {
@@ -14,7 +15,9 @@ public class LexicalAnalizer {
     ArrayList<String> tokens;
     String line;
     boolean stringQuoteFoundBefore = false;
-    boolean floatPointNumberFoundBefore = false;
+    boolean floatPointFoundBefore = false;
+
+    boolean numberFoundBefore = false;
 
     boolean identifierOrReservedWordFound = false;
 
@@ -46,20 +49,21 @@ public class LexicalAnalizer {
                             identifierOrReservedWordFound = true;
                             continue;
                         }
+
+                        if (identifierOrReservedWordFound && lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)){
+                            state = 11;
+                        }
                         state += 1;
 
                     case 1:
                         // Numeros enteros
                         if (lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)) {
                             token.append(lexeme);
+                            numberFoundBefore = true;
                             state = 1;
                             continue;
                         }
-                        if (lexeme.matches(TokenPattern.LETTER_PATTERN) && identifierOrReservedWordFound) {
-                            token.append(lexeme);
-                            state = 0;
-                            continue;
-                        }
+
                         state += 1;
 
                     case 2:
@@ -70,16 +74,17 @@ public class LexicalAnalizer {
                                 state = 0;
                                 continue;
                             }
+
                             tokens.add(valueOf(token));
                             tokens.add(lexeme);
                             token = new StringBuilder();
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
 
                             state = 0;
                             continue;
                         }
-                        state += 1;
+                        state +=1;
 
                     case 3:
                         // Operadores lógicos  & | !
@@ -93,7 +98,7 @@ public class LexicalAnalizer {
                             tokens.add(lexeme);
                             token = new StringBuilder();
                             state = 0;
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
 
                             continue;
@@ -112,7 +117,7 @@ public class LexicalAnalizer {
                             tokens.add(lexeme);
                             token = new StringBuilder();
                             state = 0;
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
 
                             continue;
@@ -130,7 +135,7 @@ public class LexicalAnalizer {
                             tokens.add(valueOf(token));
                             token = new StringBuilder();
                             state = 0;
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
 
                             continue;
@@ -149,7 +154,7 @@ public class LexicalAnalizer {
                             tokens.add(lexeme);
                             token = new StringBuilder();
                             state = 0;
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
 
                             continue;
@@ -168,7 +173,7 @@ public class LexicalAnalizer {
                             tokens.add(lexeme);
                             token = new StringBuilder();
                             state = 0;
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
 
                             continue;
@@ -196,7 +201,7 @@ public class LexicalAnalizer {
                                 state = 0;
                                 continue;
                             }
-                            floatPointNumberFoundBefore = false;
+                            floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
                             stringQuoteFoundBefore = true;
                             state = 0;
@@ -206,18 +211,38 @@ public class LexicalAnalizer {
 
                     case 10:
                         //Punto flotante
-                        if (floatPointNumberFoundBefore && !stringQuoteFoundBefore) {
+                        if (floatPointFoundBefore && !stringQuoteFoundBefore) {
                             throwError(line, "INVALID FLOAT POINT .");
                         }
 
-                        if (lexeme.matches(TokenPattern.DECIMAL_FLOAT_POINT) && !identifierOrReservedWordFound) {
-                            token.append(lexeme);
-                            state = 1;
-                            floatPointNumberFoundBefore = true;
-                            continue;
+                        if (lexeme.matches(TokenPattern.DECIMAL_FLOAT_POINT)) {
+                            if(valueOf(chars[i-1]).matches(TokenPattern.INTEGER_NUMBER_PATTERN) &&
+                                    valueOf(chars[i+1]).matches(TokenPattern.INTEGER_NUMBER_PATTERN)
+                            ) {
+                                token.append(lexeme);
+                                state = 1;
+                                floatPointFoundBefore = true;
+                                numberFoundBefore = false;
+                                continue;
+                            }
                         }
                         state += 1;
+                    case 11:
+                        if(identifierOrReservedWordFound){
+                            //Identificador o palabra reservada
+                            if(lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)){
+                                token.append(lexeme);
+                                continue;
+                            }
+                            if(lexeme.matches(TokenPattern.LETTER_PATTERN)){
+                                token.append(lexeme);
+                                state = 0;
+                                continue;
+                            }
+                        }
 
+
+                        state += 1;
 
                     default:
                         // string cadena="resultado:.?$%?$?%";
