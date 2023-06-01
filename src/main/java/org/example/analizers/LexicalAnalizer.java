@@ -21,7 +21,6 @@ public class LexicalAnalizer {
     boolean identifierOrReservedWordFound = false;
 
 
-
     public LexicalAnalizer() throws FileNotFoundException {
         this.reader = new StreamReader("assets/code.txt");
 
@@ -37,7 +36,8 @@ public class LexicalAnalizer {
 
             int state = 0;
             //aa ajdsjadjda 1a232
-            for (int i = 0; i < chars.length; i++){
+            outerLoop:
+            for (int i = 0; i < chars.length; i++) {
                 String lexeme = valueOf(chars[i]);
 
                 switch (state) {
@@ -49,7 +49,7 @@ public class LexicalAnalizer {
                             continue;
                         }
 
-                        if (identifierOrReservedWordFound && lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)){
+                        if (identifierOrReservedWordFound && lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)) {
                             state = 11;
                         }
                         state += 1;
@@ -59,11 +59,9 @@ public class LexicalAnalizer {
                         if (lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)) {
                             token.append(lexeme);
                             numberFoundBefore = true;
-                            state = 1;
                             continue;
                         }
-
-                        state = 10;
+                        state += 1;
 
                     case 2:
                         // Operadores aritméticos  + - * / %
@@ -83,7 +81,7 @@ public class LexicalAnalizer {
                             state = 0;
                             continue;
                         }
-                        state +=1;
+                        state += 1;
 
                     case 3:
                         // Operadores lógicos  & !
@@ -121,7 +119,7 @@ public class LexicalAnalizer {
                             identifierOrReservedWordFound = false;
                             continue;
                         }
-                        state += 2;
+                        state = 6;
 
                     case 5:
                         // Operador =
@@ -136,6 +134,8 @@ public class LexicalAnalizer {
                         token = new StringBuilder();
 
                         state = 0;
+                        continue outerLoop;
+
 
                     case 6:
                         // Espacio
@@ -209,8 +209,8 @@ public class LexicalAnalizer {
                         }
 
                         if (lexeme.matches(TokenPattern.DECIMAL_FLOAT_POINT)) {
-                            if(valueOf(chars[i-1]).matches(TokenPattern.INTEGER_NUMBER_PATTERN) &&
-                                    valueOf(chars[i+1]).matches(TokenPattern.INTEGER_NUMBER_PATTERN)
+                            if (valueOf(chars[i - 1]).matches(TokenPattern.INTEGER_NUMBER_PATTERN) &&
+                                    valueOf(chars[i + 1]).matches(TokenPattern.INTEGER_NUMBER_PATTERN)
                             ) {
                                 token.append(lexeme);
                                 state = 1;
@@ -221,13 +221,13 @@ public class LexicalAnalizer {
                         }
                         state += 1;
                     case 11:
-                        if(identifierOrReservedWordFound){
+                        if (identifierOrReservedWordFound) {
                             //Identificador o palabra reservada
-                            if(lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)){
+                            if (lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)) {
                                 token.append(lexeme);
                                 continue;
                             }
-                            if(lexeme.matches(TokenPattern.LETTER_PATTERN)){
+                            if (lexeme.matches(TokenPattern.LETTER_PATTERN)) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;

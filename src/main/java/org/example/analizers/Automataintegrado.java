@@ -20,6 +20,7 @@ public class Automataintegrado {
     private static List<Character> OperadoresAritmeticos = Arrays.asList('+', '-', '%', '*', '/');
     private static List<Character> PuntationSymbols = Arrays.asList('{', '}', '[', ']', ';', ',', '(', ')');
     private static List<Character> RelationalOperators = Arrays.asList('<', '>', '=', '!');
+    private static List<Character> witheSpaces = Arrays.asList('\0');
 
     public static void main(String[] args) throws Exception {
         reader = new StreamReader("assets/code.txt");
@@ -45,10 +46,9 @@ public class Automataintegrado {
 
                 switch (state) {
                     case 0:
-                        if (Character.isWhitespace(currentChar)) {
+                        if (Character.isWhitespace(currentChar) || witheSpaces.contains(currentChar)) {
                             break;
-                        }
-                        if (Character.isLetter(currentChar)) {
+                        } else if (Character.isLetter(currentChar)) {
                             token.append(currentChar);
                             state = 1;
                             break;
@@ -173,14 +173,13 @@ public class Automataintegrado {
                             tokens.add(valueOf(token));
                             System.out.println("Lexeme: " + valueOf(token));
                             token = new StringBuilder();
-                            break;
                         } else {
                             tokens.add(valueOf(token));
                             System.out.println("Lexeme: " + valueOf(token));
                             token = new StringBuilder();
                             isSeparator = true;
-                            state = 0;
                         }
+                        state = 0;
                         break;
 
                     case 12:
