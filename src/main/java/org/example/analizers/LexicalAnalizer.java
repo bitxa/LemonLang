@@ -2,8 +2,10 @@ package org.example.analizers;
 
 import org.example.input_stream.StreamReader;
 import org.example.symbols.TokenPattern;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
 import static java.lang.String.valueOf;
 
 public class LexicalAnalizer {
@@ -19,18 +21,20 @@ public class LexicalAnalizer {
 
     public LexicalAnalizer() throws FileNotFoundException {
         this.reader = new StreamReader("assets/code.txt");
+
         this.pattern = new TokenPattern();
         tokens = new ArrayList<>();
     }
 
     public void collectTokens() throws Exception {
-        fileLoop:while ((line = this.reader.buffer().readLine()) != null) {
+        fileLoop:
+        while ((line = this.reader.buffer().readLine()) != null) {
             char[] chars = line.toCharArray();
             StringBuilder token = new StringBuilder();
 
             int state = 0;
 
-            for (int i = 0; i < chars.length ; i++) {
+            for (int i = 0; i < chars.length; i++) {
                 String lexeme = valueOf(chars[i]);
 
                 switch (state) {
@@ -38,6 +42,12 @@ public class LexicalAnalizer {
                         // Letra
                         if (lexeme.matches(TokenPattern.LETTER_PATTERN)) {
                             token.append(lexeme);
+                            continue;
+                        }
+                        if (lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)
+                                && valueOf(chars[i - 1]).matches(TokenPattern.LETTER_PATTERN)) {
+                            token.append(lexeme);
+                            state = 11;
                             continue;
                         }
                         state += 1;
@@ -154,13 +164,13 @@ public class LexicalAnalizer {
 
                     case 8:
                         // COMENTARIOS
-                        if (lexeme.equals(TokenPattern.COMMENT) && !stringQuoteFoundBefore){
-                            if(token.toString().length()==0){
+                        if (lexeme.equals(TokenPattern.COMMENT) && !stringQuoteFoundBefore) {
+                            if (token.toString().length() == 0) {
                                 tokens.add(line.replaceFirst("^\\s+", ""));
                                 continue fileLoop;
                             }
 
-                            state +=1;
+                            state += 1;
                         }
                         state += 1;
                     case 9:
@@ -193,6 +203,21 @@ public class LexicalAnalizer {
                         }
                         state += 1;
 
+
+                    case 11:
+                        if (lexeme.matches(TokenPattern.INTEGER_NUMBER_PATTERN)) {
+                            token.append(lexeme);
+                            continue;
+                        }
+
+                        if (lexeme.matches(TokenPattern.LETTER_PATTERN)) {
+                            token.append(lexeme);
+                            state = 0;
+                            continue;
+                        }
+
+                        state += 1;
+
                     default:
                         // string cadena="resultado:.?$%?$?%";
                         if (stringQuoteFoundBefore) {
@@ -203,6 +228,8 @@ public class LexicalAnalizer {
                         throwError(line, "Symbol { " + lexeme + " } not valid");
                         break;
                 }
+                System.out.println(lexeme + " " + state);
+
             }
         }
     }
