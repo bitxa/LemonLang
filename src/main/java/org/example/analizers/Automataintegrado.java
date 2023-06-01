@@ -20,7 +20,6 @@ public class Automataintegrado {
     private static List<Character> OperadoresAritmeticos = Arrays.asList('+', '-', '%', '*', '/');
     private static List<Character> PuntationSymbols = Arrays.asList('{', '}', '[', ']', ';', ',', '(', ')');
     private static List<Character> RelationalOperators = Arrays.asList('<', '>', '=', '!');
-    private static List<Character> witheSpaces = Arrays.asList('\0');
 
     public static void main(String[] args) throws Exception {
         reader = new StreamReader("assets/code.txt");
@@ -46,7 +45,7 @@ public class Automataintegrado {
 
                 switch (state) {
                     case 0:
-                        if (Character.isWhitespace(currentChar) || witheSpaces.contains(currentChar)) {
+                        if (Character.isWhitespace(currentChar)) {
                             break;
                         } else if (Character.isLetter(currentChar)) {
                             token.append(currentChar);
@@ -217,5 +216,4 @@ public class Automataintegrado {
         System.out.printf("%s ERROR: %s %s%n", "\u001B[31m", error, "\u001B[0m");
         System.exit(0);
     }
-
 }

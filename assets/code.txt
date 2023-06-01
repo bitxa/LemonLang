@@ -1,7 +1,12 @@
  lemonade nuevoPrograma{
     number a2> = ();
     number b2 =300.2;
-
+    if ( a < 2 )-} {
+       print "hola";
+    }
+    else{
+       print "adios";
+    }
     string cadena == " resultado:.?$%?& 12 | <,; >= $?%";
     string cadena="cadena2:";
     $jdajjadosj
