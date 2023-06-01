@@ -6,7 +6,6 @@ import org.example.symbols.TokenPattern;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import static java.lang.CharSequence.compare;
 import static java.lang.String.valueOf;
 
 public class LexicalAnalizer {
@@ -14,7 +13,7 @@ public class LexicalAnalizer {
     TokenPattern pattern;
     ArrayList<String> tokens;
     String line;
-    boolean stringQuoteFoundBefore = false;
+    boolean inString = false;
     boolean floatPointFoundBefore = false;
 
     boolean numberFoundBefore = false;
@@ -38,12 +37,12 @@ public class LexicalAnalizer {
 
             int state = 0;
             //aa ajdsjadjda 1a232
-            for (int i = 0; i < chars.length; i++) {
+            for (int i = 0; i < chars.length; i++){
                 String lexeme = valueOf(chars[i]);
 
                 switch (state) {
                     case 0:
-                        // Palabras reservadas, identificadores
+                        // Estado 0
                         if (lexeme.matches(TokenPattern.LETTER_PATTERN)) {
                             token.append(lexeme);
                             identifierOrReservedWordFound = true;
@@ -64,12 +63,12 @@ public class LexicalAnalizer {
                             continue;
                         }
 
-                        state += 1;
+                        state = 10;
 
                     case 2:
                         // Operadores aritméticos  + - * / %
                         if (lexeme.matches(TokenPattern.ARITHMETIC_OPERATOR_PATTERN)) {
-                            if (stringQuoteFoundBefore) {
+                            if (inString) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;
@@ -87,13 +86,14 @@ public class LexicalAnalizer {
                         state +=1;
 
                     case 3:
-                        // Operadores lógicos  & | !
+                        // Operadores lógicos  & !
                         if (lexeme.matches(TokenPattern.LOGICAL_OPERATOR_PATTERN)) {
-                            if (stringQuoteFoundBefore) {
+                            if (inString) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;
                             }
+
                             tokens.add(valueOf(token));
                             tokens.add(lexeme);
                             token = new StringBuilder();
@@ -106,52 +106,46 @@ public class LexicalAnalizer {
                         state += 1;
 
                     case 4:
-                        // Operadores de comparación < <= > >= == !=
+                        // Operadores < > ! =
                         if (lexeme.matches(TokenPattern.COMPARISON_OPERATOR_PATTERN)) {
-                            if (stringQuoteFoundBefore) {
+                            if (inString) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;
                             }
                             tokens.add(valueOf(token));
-                            tokens.add(lexeme);
                             token = new StringBuilder();
-                            state = 0;
+                            token.append(lexeme);
+                            state = 5;
                             floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
-
                             continue;
                         }
-                        state += 1;
+                        state += 2;
 
                     case 5:
-                        // Espacio
-                        if (lexeme.matches(TokenPattern.WHITE_SPACE)) {
-                            if (stringQuoteFoundBefore) {
-                                token.append(lexeme);
-                                state = 0;
-                                continue;
-                            }
+                        // Operador =
+                        if (lexeme.equals(TokenPattern.ASSIGNMENT_OPERATOR_PATTERN)) {
+                            token.append(lexeme);
                             tokens.add(valueOf(token));
                             token = new StringBuilder();
                             state = 0;
-                            floatPointFoundBefore = false;
-                            identifierOrReservedWordFound = false;
-
                             continue;
                         }
-                        state += 1;
+                        tokens.add(valueOf(token));
+                        token = new StringBuilder();
+
+                        state = 0;
 
                     case 6:
-                        // Operadores puntuación () {} , ;]
-                        if (lexeme.matches(TokenPattern.PUNCTUATION_PATTERN)) {
-                            if (stringQuoteFoundBefore) {
+                        // Espacio
+                        if (lexeme.matches(TokenPattern.WHITE_SPACE)) {
+                            if (inString) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;
                             }
                             tokens.add(valueOf(token));
-                            tokens.add(lexeme);
                             token = new StringBuilder();
                             state = 0;
                             floatPointFoundBefore = false;
@@ -162,9 +156,9 @@ public class LexicalAnalizer {
                         state += 1;
 
                     case 7:
-                        // Operador asignación =
-                        if (lexeme.matches(TokenPattern.ASSIGNMENT_OPERATOR_PATTERN)) {
-                            if (stringQuoteFoundBefore) {
+                        // Operadores puntuación () {} , ;]
+                        if (lexeme.matches(TokenPattern.PUNCTUATION_PATTERN)) {
+                            if (inString) {
                                 token.append(lexeme);
                                 state = 0;
                                 continue;
@@ -175,18 +169,16 @@ public class LexicalAnalizer {
                             state = 0;
                             floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
-
                             continue;
                         }
                         state += 1;
 
                     case 8:
                         // COMENTARIOS
-                        if (lexeme.equals(TokenPattern.COMMENT) && !stringQuoteFoundBefore) {
+                        if (lexeme.equals(TokenPattern.COMMENT) && !inString) {
                             if (token.toString().length() == 0) {
                                 continue fileLoop;
                             }
-
                             state += 1;
                         }
                         state += 1;
@@ -194,24 +186,25 @@ public class LexicalAnalizer {
                         // Comilla doble de cadenas de texto "
                         if (lexeme.matches(TokenPattern.STRING_DOUBLE_QUOTE)) {
                             token.append(lexeme);
-                            if (stringQuoteFoundBefore) {
+                            if (inString) {
                                 tokens.add(valueOf(token));
                                 token = new StringBuilder();
-                                stringQuoteFoundBefore = false;
+                                inString = false;
                                 state = 0;
                                 continue;
                             }
                             floatPointFoundBefore = false;
                             identifierOrReservedWordFound = false;
-                            stringQuoteFoundBefore = true;
+                            inString = true;
                             state = 0;
                             continue;
                         }
                         state += 1;
 
+
                     case 10:
                         //Punto flotante
-                        if (floatPointFoundBefore && !stringQuoteFoundBefore) {
+                        if (floatPointFoundBefore && !inString) {
                             throwError(line, "INVALID FLOAT POINT .");
                         }
 
@@ -240,13 +233,11 @@ public class LexicalAnalizer {
                                 continue;
                             }
                         }
-
-
                         state += 1;
 
                     default:
                         // string cadena="resultado:.?$%?$?%";
-                        if (stringQuoteFoundBefore) {
+                        if (inString) {
                             token.append(lexeme);
                             state = 0;
                             continue;

@@ -11,10 +11,10 @@ public class TokenPattern {
     public static final String ARITHMETIC_OPERATOR_PATTERN = "\\+|-|\\*|/|%";
 
     // Operadores relacionales o de comparación
-    public static final String COMPARISON_OPERATOR_PATTERN = "<|<=|>|>=|==|!=";
+    public static final String COMPARISON_OPERATOR_PATTERN = "<|>|!|=";
 
     // Operadores lógicos &&: AND, ||: OR, !: NOT
-    public static final String LOGICAL_OPERATOR_PATTERN = "[&|!]";
+    public static final String LOGICAL_OPERATOR_PATTERN = "&|\\|";
 
     // Operador de asignación
     public static final String ASSIGNMENT_OPERATOR_PATTERN = "=";
