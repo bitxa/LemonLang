@@ -1,5 +1,12 @@
 # Lemon Lang 
 
+Repositorio: [https://github.com/bitxa/LemonLang](https://github.com/bitxa/LemonLang)
+
+## Autores
+
+* [Joel Romero](https://github.com/bitxa)
+* [Fabián Montoya](https://github.com/f4biaan)
+
 ## Comandos y Sintaxis
 
 * ***Crear un nuevo programa***
@@ -198,8 +205,3 @@
 |:---:|---|
 |Numeros|Para identificar los números decimales el separador va a ser un . (punto)|
 |String, número|Ahora para comprobar que haga terminado un número o String (Identificador o Palabra reservada) se utilizan los demás sim bolos como operadores aritmeticos (+,-,*,/,%), operadores rrelacionales (<,>,=), operadores lógicos (&, ! , |), y en caso de ser otros simbolos se comprobaran si existen en el lenguaje se continuara el análisis o sino se continua.|
-
-## Autores
-
-* [Joel Romero](https://github.com/bitxa)
-* [Fabián Montoya](https://github.com/f4biaan)
