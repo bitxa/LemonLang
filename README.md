@@ -155,6 +155,10 @@ Repositorio: [https://github.com/bitxa/LemonLang](https://github.com/bitxa/Lemon
       juice(a);
     }
 
+    for (number a = 1; a < 10; a++) {
+      juice(a);
+    }
+
     for (number a = 1; a < 10; a += 1) {
       juice(a);
     }
