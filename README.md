@@ -151,11 +151,11 @@ Repositorio: [https://github.com/bitxa/LemonLang](https://github.com/bitxa/Lemon
     Las estructuras repetitivas para ejecutar instrucciones un número finito de veces. Aqui encontramos el ciclo **for** que ejecuta las instrucciones que contiene un número finito de veces, y se debe estructurar de la siguiente manera:
 
     ```
-    for (acid a = 1; a < 10; a = a + 1) {
+    for (number a = 1; a < 10; a = a + 1) {
       juice(a);
     }
 
-    for (acid a = 1; a < 10; a += 1) {
+    for (number a = 1; a < 10; a += 1) {
       juice(a);
     }
     ```
