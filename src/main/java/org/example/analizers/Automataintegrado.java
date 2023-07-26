@@ -39,8 +39,18 @@ public class Automataintegrado {
             tokenTypes[i] = verifiedTokens.get(i).type;
             System.out.print(tokenTypes[i] + ' ');
         }
+
+        System.out.println();
+        // System.out.print(tokens);
+        // System.out.println();
+        // System.out.println(tokenTypeGetter.getOnlyTypes());
+        // System.out.println();
+
         System.out.println("\n=========Fin análisis léxico========\n\n");
 
+        Parser parser = new Parser(tokenTypes);
+        parser.analizer();
+        System.out.println("\n=========Fin análisis sintáctico========\n\n");
 
     }
 
@@ -224,7 +234,7 @@ public class Automataintegrado {
             }
 
         }
-        System.out.println(tokens);
+        // System.out.println(tokens);
     }
 
     public static void throwError(String line, String error) {

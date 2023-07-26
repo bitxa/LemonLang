@@ -1,7 +1,3 @@
 lemonade programa {
     number a = 1;
-    number b = 2;
-    if (a == b){
-        a = 4;
-    }
 }

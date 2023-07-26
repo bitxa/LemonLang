@@ -9,6 +9,7 @@ import org.example.symbols.TokenPattern;
 public class TokenTypeGetter {
     private ArrayList<String> tokens;
     private ArrayList<Token> verifiedTokens = new ArrayList<>();
+    private ArrayList<String> onlyTypes = new ArrayList<>();
 
     public TokenTypeGetter(ArrayList<String> tokens) {
         this.tokens = tokens;
@@ -31,4 +32,12 @@ public class TokenTypeGetter {
     public ArrayList<Token> getVerifiedTokens() {
         return verifiedTokens;
     }
+
+    public ArrayList<String> getOnlyTypes() {
+        for (Token token : verifiedTokens) {
+            onlyTypes.add(token.type);
+        }
+        return onlyTypes;
+    }
+
 }
