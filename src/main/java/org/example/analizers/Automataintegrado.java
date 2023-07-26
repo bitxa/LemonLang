@@ -41,14 +41,7 @@ public class Automataintegrado {
         }
         System.out.println("\n=========Fin análisis léxico========\n\n");
 
-        System.out.println("=========Inicio análisis sintáctico========");
 
-        AnalizadorSintactico analizadorSintactico = new AnalizadorSintactico(List.of(tokenTypes));
-
-        analizadorSintactico.cargarTablaLRDesdeCSV("assets/table.csv");
-
-        analizadorSintactico.imprimirTablaDeAcciones();
-        analizadorSintactico.analizar();
     }
 
     public static void analizer() throws Exception {
