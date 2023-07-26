@@ -1,0 +1,30 @@
+P' -> P $
+P -> lemonade ID { BS }
+BS -> US BS
+BS -> US
+US -> UD
+US -> ASIG
+US -> WHILE
+US -> IF
+UD -> Tipo ASIG
+Tipo ->  NUM
+ASIG -> ID = E ;
+WHILE -> while ( COND ) { BS }
+IF -> if ( COND ) { BS }
+IF -> if ( COND ) { BS } else { BS }
+COND -> ID OP_REL ID
+OP_REL -> <
+OP_REL -> >
+OP_REL -> ==
+OP_REL -> <=
+OP_REL -> >=
+OP_REL -> !=
+E -> E + T
+E -> E - T
+E -> T
+T -> T * F
+T -> T / F
+T -> F
+F -> ( E )
+F -> ID
+F -> NUM

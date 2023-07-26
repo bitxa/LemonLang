@@ -1,20 +1,12 @@
 package org.example.symbols;
 
-public class Token{
-    private final String value;
-    private final TokenType type;
+public class Token {
+    public String type;
+    public String value;
 
-    public Token(String value, TokenType type){
-        this.value = value;
+    public Token( String value, String type) {
         this.type = type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public TokenType getType() {
-        return type;
+        this.value = value;
     }
 
     @Override

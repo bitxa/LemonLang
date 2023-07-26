@@ -1,9 +1,12 @@
 package org.example.analizers;
 
 import org.example.input_stream.StreamReader;
+import org.example.symbols.Token;
 import org.example.symbols.TokenPattern;
 
+import javax.lang.model.type.ArrayType;
 import java.io.FileNotFoundException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +28,27 @@ public class Automataintegrado {
         reader = new StreamReader("assets/code.txt");
         tokens = new ArrayList<String>();
         analizer();
+
+        TokenTypeGetter tokenTypeGetter = new TokenTypeGetter(tokens);
+        tokenTypeGetter.getTypes();
+        List<Token> verifiedTokens = tokenTypeGetter.getVerifiedTokens();
+        verifiedTokens.add(new Token("$", "$"));
+
+        String[] tokenTypes = new String[verifiedTokens.size()];
+        for (int i = 0; i < verifiedTokens.size(); i++) {
+            tokenTypes[i] = verifiedTokens.get(i).type;
+            System.out.print(tokenTypes[i] + ' ');
+        }
+        System.out.println("\n=========Fin análisis léxico========\n\n");
+
+        System.out.println("=========Inicio análisis sintáctico========");
+
+        AnalizadorSintactico analizadorSintactico = new AnalizadorSintactico(List.of(tokenTypes));
+
+        analizadorSintactico.cargarTablaLRDesdeCSV("assets/table.csv");
+
+        analizadorSintactico.imprimirTablaDeAcciones();
+        analizadorSintactico.analizar();
     }
 
     public static void analizer() throws Exception {
@@ -124,7 +148,6 @@ public class Automataintegrado {
                             state = -1;
                             throwError(line, "Symbol { " + currentChar + " } not valid");
                             break;
-                            // System.out.println("error");
                         } else {
                             tokens.add(valueOf(token));
                             System.out.println("Lexeme: " + valueOf(token));
