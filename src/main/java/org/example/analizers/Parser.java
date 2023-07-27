@@ -175,7 +175,6 @@ public class Parser {
         }
     }
 
-    static String[] tokensInput;
     /* public static void main(String[] args) {
         // Muestra la tabla de acciones
         System.out.println("Tabla de acciones:");
@@ -193,7 +192,7 @@ public class Parser {
             System.out.println(Arrays.toString(gotoTable[i]).replaceAll("[\\[\\],]", ""));
         }
     } */
-
+    static String[] tokensInput;
     Parser(String[] input) {
         tokensInput = input;
         // System.out.println(tokensInput[1]);
@@ -260,7 +259,7 @@ public class Parser {
                 // error
                 throw new RuntimeException("Acción desconocida: " + action);
             }
-            System.out.println(currentState + " " + currentToken);
+            //System.out.println(currentState + " " + currentToken);
         }
     }
 

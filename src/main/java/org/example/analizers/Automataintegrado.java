@@ -2,11 +2,7 @@ package org.example.analizers;
 
 import org.example.input_stream.StreamReader;
 import org.example.symbols.Token;
-import org.example.symbols.TokenPattern;
 
-import javax.lang.model.type.ArrayType;
-import java.io.FileNotFoundException;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,8 +44,12 @@ public class Automataintegrado {
 
         System.out.println("\n=========Fin análisis léxico========\n\n");
 
-        Parser parser = new Parser(tokenTypes);
-        parser.analizer();
+        /*Parser parser = new Parser(tokenTypes);
+        parser.analizer();*/
+
+        Parser2 parser2 = new Parser2(tokenTypes);
+        parser2.analizer();
+
         System.out.println("\n=========Fin análisis sintáctico========\n\n");
 
     }
