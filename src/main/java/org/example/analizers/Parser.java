@@ -18,7 +18,7 @@ public class Parser {
             /*9*/ {" ", "r5", " ", "r5", " ", " ", " ", "r5", " ", "r5", "r5", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
             /*10*/{" ", "r6", " ", "r6", " ", " ", " ", "r6", " ", "r6", "r6", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
             /*11*/{" ", "r7", " ", "r7", " ", " ", " ", "r7", " ", "r7", "r7", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
-            /*12*/{" ", "d13", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
+            /*12*/{" ", "d13", " ", " ", " ", " ", " ", " ", "d19", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
             /*13*/{" ", " ", " ", " ", " ", " ", " ", " ", "d20", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
             /*14*/{" ", " ", " ", " ", " ", "d21", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
             /*15*/{" ", " ", " ", " ", " ", "d22", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "},
@@ -80,7 +80,7 @@ public class Parser {
             /*7*/     {" ","18","7","8","9","10"," ","11"," ","12"," "," "," "},
             /*8*/     {" "," "," "," "," "," "," "," "," "," "," "," "," "},
             /*9*/     {" "," "," "," "," "," "," "," "," "," "," "," "," "},
-            /*10*/     {" "," "," "," "," "," "," "," "," "," "," "," "," "},
+            /*10*/    {" "," "," "," "," "," "," "," "," "," "," "," "," "},
             /*11*/    {" "," "," "," "," "," "," "," "," "," "," "," "," "},
             /*12*/    {" "," "," "," ","19" ," "," "," "," "," "," "," "},
             /*13*/    {" "," "," "," "," "," "," "," "," "," "," "," "," "},
@@ -205,7 +205,7 @@ public class Parser {
         Stack<String> symbolStack = new Stack<>();
 
         stateStack.push(0);
-        symbolStack.push(tokensInput[0]);
+        // symbolStack.push(tokensInput[0]);
 
         int tokenIndex = 0;
 
@@ -215,6 +215,7 @@ public class Parser {
 
             String action = getAction(currentState, currentToken);
             System.out.println(action);
+
 
 
             if (action.startsWith("d")) {
@@ -229,25 +230,28 @@ public class Parser {
                 String production = productions[Integer.parseInt(action.substring(1))];
                 // System.out.println(production);
                 String[] parts = production.split("\\|");
-                 System.out.println(Arrays.toString(parts));
+                // System.out.println(Arrays.toString(parts));
 
                 String left = parts[0].trim();
                 String right = parts[1].trim();
 
                 int count = right.split(" ").length;
 
-
-
                 for (int i = 0; i < count; i++) {
                     stateStack.pop();
                     symbolStack.pop();
                 }
-                //symbolStack.push(left);
+                symbolStack.push(left);
                 currentToken = symbolStack.peek();
-                //currentState = stateStack.peek();
-                stateStack.push(Integer.valueOf(gotoTable[currentState][Arrays.asList(nonTerminals).indexOf(left)]));
+                currentState = stateStack.peek();
+                // System.out.println(Arrays.asList(nonTerminals).indexOf(left));
+                // System.out.println(currentState);
+                // System.out.println(Arrays.asList(nonTerminals).indexOf(left));
+                // System.out.println(Integer.valueOf(gotoTable[currentState][Arrays.asList(nonTerminals).indexOf(left)]) );
+                stateStack.push(Integer.valueOf(gotoTable[currentState][Arrays.asList(nonTerminals).indexOf(left)]) );
+                currentState = stateStack.peek();
                 // symbolStack.push(left);
-                break;
+                // break;
             } else if (action.equals("acep")) {
                 // aceptar
                 System.out.println("Si pasamos de ciclo");
@@ -256,6 +260,7 @@ public class Parser {
                 // error
                 throw new RuntimeException("Acción desconocida: " + action);
             }
+            System.out.println(currentState + " " + currentToken);
         }
     }
 
