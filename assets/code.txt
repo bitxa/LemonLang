@@ -1,3 +1,15 @@
-lemonade programa {
-    number a = 1;
+lemonade
+programa1  {
+
+    number a = 2;
+
+    if ( a == b ) {
+        a=2;
+    }
+
+    while( a < b ) {
+        a=2;
+    }
+
+    a = 2+2;
 }
