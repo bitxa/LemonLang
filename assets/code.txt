@@ -1,5 +1,4 @@
-lemonade
-programa1  {
+lemonade programa1  {
 
     number a = 2;
 
